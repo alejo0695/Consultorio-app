@@ -120,10 +120,8 @@ async function apiPost(action, payload = {}) {
 async function apiGet(params = {}) {
   const url = new URL(API_BASE_URL);
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== "") {
-      url.searchParams.append(key, value);
-    }
-  });
+  url.searchParams.append(key, value ?? "");
+});
 
   const response = await fetch(url.toString());
   if (!response.ok) {
