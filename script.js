@@ -150,7 +150,11 @@ async function handleLoginSubmit(event) {
   }
 
   try {
-    const result = await apiPost("login", { username, password });
+    const result = await apiGet({
+  action: "login",
+  username,
+  password
+});
     currentUser = {
       username: result.user.username,
       role: result.user.rol,
