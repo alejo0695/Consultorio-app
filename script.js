@@ -148,15 +148,16 @@ async function handleLoginSubmit(event) {
   }
 
   try {
-await apiGet({
+const result = await apiGet({
   action: "login",
   username,
   password
 });
-    currentUser = {
-      username: result.user.username,
-      role: result.user.rol,
-    };
+
+currentUser = {
+  username: result.user.username,
+  role: result.user.rol,
+};
     updateHeaderUser();
     activateMenuForRole(currentUser.role);
     showAppShell();
@@ -191,7 +192,7 @@ async function handlePacienteSubmit(event) {
 
   try {
     
-  await apiGet({
+  const result = await apiGet({
   action: "crearPaciente",
   nombre: data.nombre,
   documento: data.documento,
@@ -240,7 +241,7 @@ async function handlePagoSubmit(event) {
   }
 
   try {
-await apiGet({
+const result = await apiGet({
   action: "registrarPago",
   paciente: data.paciente,
   fecha: data.fecha,
