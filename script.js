@@ -148,7 +148,8 @@ async function handleLoginSubmit(event) {
   }
 
   try {
-const result = await apiPost("login", {
+await apiGet({
+  action: "login",
   username,
   password
 });
@@ -190,7 +191,14 @@ async function handlePacienteSubmit(event) {
 
   try {
     
-   await apiPost("crearPaciente", data);
+  await apiGet({
+  action: "crearPaciente",
+  nombre: data.nombre,
+  documento: data.documento,
+  telefono: data.telefono,
+  empresa: data.empresa,
+  terapeuta: data.terapeuta
+});
     
     setMessage("pacienteMessage", "Paciente guardado correctamente.", "success");
     form.reset();
@@ -232,7 +240,16 @@ async function handlePagoSubmit(event) {
   }
 
   try {
- await apiPost("registrarPago", data);
+await apiGet({
+  action: "registrarPago",
+  paciente: data.paciente,
+  fecha: data.fecha,
+  monto: data.monto,
+  metodo: data.metodo,
+  terapeuta: data.terapeuta,
+  empresa: data.empresa
+});
+    
     setMessage("pagoMessage", "Pago registrado correctamente.", "success");
     form.reset();
   } catch (error) {
