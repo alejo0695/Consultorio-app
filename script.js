@@ -194,8 +194,7 @@ async function handlePacienteSubmit(event) {
   try {
     
     await apiGet({
-  action: "crearPaciente",
-  ...data
+  action: "crearPaciente",data
 });
     setMessage("pacienteMessage", "Paciente guardado correctamente.", "success");
     form.reset();
@@ -238,8 +237,7 @@ async function handlePagoSubmit(event) {
 
   try {
     await apiGet({
-  action: "registrarPago",
-  ...data
+  action: "registrarPago",data
 });
     
     setMessage("pagoMessage", "Pago registrado correctamente.", "success");
