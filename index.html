@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Consultorio Plus — Gestión de Pacientes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="app-header__brand">
+      <div class="app-logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <div>
+        <h1 class="app-title">Consultorio Plus</h1>
+        <p class="app-subtitle">Sistema de gestión integral</p>
+      </div>
+    </div>
+    <div class="app-header__user" id="headerUserArea"></div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- LOGIN -->
+    <section class="auth" id="loginView">
+      <div class="auth-card">
+        <div class="auth-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <h2 class="auth-title">Bienvenido</h2>
+        <p class="auth-description">Ingresa tus credenciales para continuar.</p>
+        <form id="loginForm" class="form">
+          <div class="form-field">
+            <label for="username">Usuario</label>
+            <input type="text" id="username" name="username" autocomplete="username" placeholder="tu.usuario" required />
+          </div>
+          <div class="form-field">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" autocomplete="current-password" placeholder="••••••••" required />
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            Entrar al sistema
+          </button>
+        </form>
+        <div id="loginMessage" class="alert" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- APP SHELL -->
+    <section class="shell hidden" id="appShell">
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar" id="sidebarNav">
+        <div class="sidebar__section">
+          <p class="sidebar__label">Secretaria</p>
+          <button class="sidebar__link is-active" data-view="secretaria-pacientes">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            Registrar paciente
+          </button>
+          <button class="sidebar__link" data-view="secretaria-pagos">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Registrar pago
+          </button>
+          <button class="sidebar__link" data-view="secretaria-lista">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Lista de pacientes
+          </button>
+        </div>
+        <div class="sidebar__section" id="adminMenu" hidden>
+          <p class="sidebar__label">Administrador</p>
+          <button class="sidebar__link" data-view="admin-dashboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </button>
+          <button class="sidebar__link" data-view="admin-cobros">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg>
+            Módulo de cobros
+          </button>
+        </div>
+        <div class="sidebar__footer">
+          <button id="logoutBtn" class="btn btn-ghost btn-full">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Cerrar sesión
+          </button>
+        </div>
+      </aside>
+
+      <!-- CONTENT AREA -->
+      <section class="content" id="contentArea">
+
+        <!-- VIEW: Registrar Paciente -->
+        <section class="view" id="view-secretaria-pacientes">
+          <header class="view-header">
+            <div>
+              <h2>Registrar paciente</h2>
+              <p>Ingresa los datos del nuevo paciente.</p>
+            </div>
+          </header>
+          <form id="pacienteForm" class="form">
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="pacienteNombre">Nombre completo <span class="required">*</span></label>
+                <input id="pacienteNombre" name="nombre" type="text" placeholder="Ej. María García" required />
+              </div>
+              <div class="form-field">
+                <label for="pacienteDocumento">Cédula / Documento <span class="required">*</span></label>
+                <input id="pacienteDocumento" name="documento" type="text" placeholder="000-0000000-0" required />
+              </div>
+              <div class="form-field">
+                <label for="pacienteTelefono">Teléfono</label>
+                <input id="pacienteTelefono" name="telefono" type="tel" placeholder="809-000-0000" />
+              </div>
+              <div class="form-field">
+                <label for="pacienteEmpresa">Empresa</label>
+                <input id="pacienteEmpresa" name="empresa" type="text" placeholder="Opcional" />
+              </div>
+              <div class="form-field">
+                <label for="pacienteTerapeuta">Terapeuta asignado <span class="required">*</span></label>
+                <input id="pacienteTerapeuta" name="terapeuta" type="text" placeholder="Nombre del terapeuta" required />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Guardar paciente
+              </button>
+              <button type="reset" class="btn btn-secondary">Limpiar</button>
+            </div>
+            <div id="pacienteMessage" class="alert" aria-live="polite"></div>
+          </form>
+        </section>
+
+        <!-- VIEW: Registrar Pago -->
+        <section class="view hidden" id="view-secretaria-pagos">
+          <header class="view-header">
+            <div>
+              <h2>Registrar pago</h2>
+              <p>Registra los pagos de pacientes existentes.</p>
+            </div>
+          </header>
+          <form id="pagoForm" class="form">
+            <div class="form-grid">
+              <!-- Búsqueda de paciente con autocomplete -->
+              <div class="form-field autocomplete-wrapper" id="pacienteBuscadorWrapper">
+                <label for="pagoPacienteBuscar">Buscar paciente <span class="required">*</span></label>
+                <div class="autocomplete-input-row">
+                  <input id="pagoPacienteBuscar" type="text" placeholder="Escribe nombre o cédula..." autocomplete="off" />
+                  <button type="button" class="btn btn-secondary btn-sm" id="btnLimpiarPaciente" hidden>✕</button>
+                </div>
+                <div id="pacienteDropdown" class="autocomplete-dropdown hidden"></div>
+                <input type="hidden" id="pagoPacienteId" name="paciente" />
+                <div id="pacienteSeleccionado" class="paciente-badge hidden"></div>
+              </div>
+
+              <div class="form-field">
+                <label for="pagoFecha">Fecha <span class="required">*</span></label>
+                <input id="pagoFecha" name="fecha" type="date" required />
+              </div>
+              <div class="form-field">
+                <label for="pagoMonto">Monto (DOP) <span class="required">*</span></label>
+                <div class="input-prefix-wrapper">
+                  <span class="input-prefix">RD$</span>
+                  <input id="pagoMonto" name="monto" type="number" min="0" step="0.01" placeholder="0.00" required />
+                </div>
+              </div>
+              <div class="form-field">
+                <label for="pagoMetodo">Método de pago <span class="required">*</span></label>
+                <select id="pagoMetodo" name="metodo" required>
+                  <option value="">Seleccionar…</option>
+                  <option>Efectivo</option>
+                  <option>Transferencia</option>
+                  <option>Tarjeta</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="pagoTerapeuta">Terapeuta <span class="required">*</span></label>
+                <input id="pagoTerapeuta" name="terapeuta" type="text" placeholder="Nombre del terapeuta" required />
+              </div>
+              <div class="form-field">
+                <label for="pagoEmpresa">Empresa asociada</label>
+                <input id="pagoEmpresa" name="empresa" type="text" placeholder="Opcional" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg>
+                Registrar pago
+              </button>
+              <button type="reset" class="btn btn-secondary" id="btnResetPago">Limpiar</button>
+            </div>
+            <div id="pagoMessage" class="alert" aria-live="polite"></div>
+          </form>
+        </section>
+
+        <!-- VIEW: Lista de Pacientes -->
+        <section class="view hidden" id="view-secretaria-lista">
+          <header class="view-header view-header--with-filters">
+            <div>
+              <h2>Lista de pacientes</h2>
+              <p>Consulta y edita los pacientes registrados.</p>
+            </div>
+            <button id="listaRefreshBtn" class="btn btn-secondary btn-sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Actualizar
+            </button>
+          </header>
+
+          <div class="search-bar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="listaBusqueda" placeholder="Buscar por nombre, cédula, empresa o terapeuta…" />
+          </div>
+
+          <div class="card table-card">
+            <div class="table-wrapper">
+              <table class="table" id="listaTabla">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Documento</th>
+                    <th>Teléfono</th>
+                    <th>Empresa</th>
+                    <th>Terapeuta</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="listaTbody">
+                  <tr><td colspan="6" class="table-empty">Cargando pacientes…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div id="listaMessage" class="alert" aria-live="polite"></div>
+        </section>
+
+        <!-- VIEW: Dashboard -->
+        <section class="view hidden" id="view-admin-dashboard">
+          <header class="view-header">
+            <div>
+              <h2>Dashboard financiero</h2>
+              <p>Resumen visual de ingresos y pacientes.</p>
+            </div>
+          </header>
+
+          <!-- KPI Cards -->
+          <div class="kpi-grid" id="kpiGrid">
+            <div class="kpi-card">
+              <div class="kpi-icon kpi-icon--blue">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg>
+              </div>
+              <div>
+                <p class="kpi-label">Ingresos del mes</p>
+                <p class="kpi-value" id="kpiMes">RD$ 0</p>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon kpi-icon--green">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+              <div>
+                <p class="kpi-label">Total pacientes</p>
+                <p class="kpi-value" id="kpiPacientes">0</p>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon kpi-icon--amber">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              </div>
+              <div>
+                <p class="kpi-label">Pagos este mes</p>
+                <p class="kpi-value" id="kpiPagos">0</p>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon kpi-icon--purple">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              </div>
+              <div>
+                <p class="kpi-label">Ingresos totales</p>
+                <p class="kpi-value" id="kpiTotal">RD$ 0</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <div class="card metric-card">
+              <h3>Ingresos por mes</h3>
+              <div class="chart-container"><canvas id="chartIngresosMes"></canvas></div>
+            </div>
+            <div class="card metric-card">
+              <h3>Ingresos por terapeuta</h3>
+              <div class="chart-container"><canvas id="chartIngresosTerapeuta"></canvas></div>
+            </div>
+            <div class="card metric-card">
+              <h3>Ingresos por empresa</h3>
+              <div class="chart-container"><canvas id="chartIngresosEmpresa"></canvas></div>
+            </div>
+            <div class="card metric-card">
+              <h3>Pacientes por empresa</h3>
+              <div class="chart-container"><canvas id="chartPacientesEmpresa"></canvas></div>
+            </div>
+          </div>
+          <div id="dashboardMessage" class="alert" aria-live="polite"></div>
+        </section>
+
+        <!-- VIEW: Módulo de Cobros -->
+        <section class="view hidden" id="view-admin-cobros">
+          <header class="view-header view-header--with-filters">
+            <div>
+              <h2>Módulo de cobros</h2>
+              <p>Historial completo de pagos registrados.</p>
+            </div>
+            <button id="cobrosRefreshBtn" class="btn btn-secondary btn-sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Actualizar
+            </button>
+          </header>
+
+          <form id="cobrosFiltrosForm" class="filters">
+            <div class="filters-grid">
+              <div class="form-field">
+                <label for="filtroFechaDesde">Desde</label>
+                <input id="filtroFechaDesde" type="date" />
+              </div>
+              <div class="form-field">
+                <label for="filtroFechaHasta">Hasta</label>
+                <input id="filtroFechaHasta" type="date" />
+              </div>
+              <div class="form-field">
+                <label for="filtroTerapeuta">Terapeuta</label>
+                <input id="filtroTerapeuta" type="text" placeholder="Todos" />
+              </div>
+              <div class="form-field">
+                <label for="filtroEmpresa">Empresa</label>
+                <input id="filtroEmpresa" type="text" placeholder="Todas" />
+              </div>
+            </div>
+          </form>
+
+          <div class="cobros-summary card">
+            <p>Total acumulado (según filtros):</p>
+            <p class="cobros-summary__value" id="cobrosTotal">RD$ 0</p>
+          </div>
+
+          <div class="card table-card">
+            <div class="table-wrapper">
+              <table class="table" id="cobrosTabla">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Paciente</th>
+                    <th>Monto</th>
+                    <th>Método</th>
+                    <th>Terapeuta</th>
+                    <th>Empresa</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="cobrosMessage" class="alert" aria-live="polite"></div>
+        </section>
+
+      </section>
+    </section>
+  </main>
+
+  <!-- MODAL: Editar Paciente -->
+  <div class="modal-overlay hidden" id="modalOverlay">
+    <div class="modal" id="modalEditar">
+      <div class="modal-header">
+        <h3>Editar paciente</h3>
+        <button class="modal-close" id="modalClose">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="editarPacienteForm" class="form">
+        <input type="hidden" id="editarFila" />
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="editarNombre">Nombre completo</label>
+            <input id="editarNombre" name="nombre" type="text" required />
+          </div>
+          <div class="form-field">
+            <label for="editarDocumento">Documento</label>
+            <input id="editarDocumento" name="documento" type="text" required />
+          </div>
+          <div class="form-field">
+            <label for="editarTelefono">Teléfono</label>
+            <input id="editarTelefono" name="telefono" type="tel" />
+          </div>
+          <div class="form-field">
+            <label for="editarEmpresa">Empresa</label>
+            <input id="editarEmpresa" name="empresa" type="text" />
+          </div>
+          <div class="form-field">
+            <label for="editarTerapeuta">Terapeuta</label>
+            <input id="editarTerapeuta" name="terapeuta" type="text" required />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg>
+            Guardar cambios
+          </button>
+          <button type="button" class="btn btn-secondary" id="modalCancelBtn">Cancelar</button>
+        </div>
+        <div id="editarMessage" class="alert" aria-live="polite"></div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
